@@ -4,7 +4,7 @@ import com.example.sinsungo.common.ApiResponseDto;
 import com.example.sinsungo.user.User;
 import com.example.sinsungo.user.UserRepository;
 import com.example.sinsungo.user.UserRoleEnum;
-import com.example.sinsungo.user.auth.dto.AuthUserRequestDto;
+import com.example.sinsungo.user.auth.dto.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +20,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     @Value("${database.username}")
     private String ADMIN_TOKEN;
     @Override
-    public ApiResponseDto signup(AuthUserRequestDto requestDto) {
+    public ApiResponseDto signup(SignUpRequestDto requestDto) {
         Optional<User> checkUsername = userRepository.findByUsername(requestDto.getUsername());
         if (checkUsername.isPresent()) {
             throw new IllegalArgumentException("이메일이 중복됩니다.");

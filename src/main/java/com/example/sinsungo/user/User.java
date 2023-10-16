@@ -1,8 +1,6 @@
 package com.example.sinsungo.user;
 
 import com.example.sinsungo.entity.TimeStamped;
-import com.example.sinsungo.user.auth.dto.AuthUserRequestDto;
-import com.example.sinsungo.user.dto.UserRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
