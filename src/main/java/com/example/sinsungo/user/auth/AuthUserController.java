@@ -1,7 +1,9 @@
 package com.example.sinsungo.user.auth;
 
 import com.example.sinsungo.common.ApiResponseDto;
+import com.example.sinsungo.user.auth.dto.SignInRequestDto;
 import com.example.sinsungo.user.auth.dto.SignUpRequestDto;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +23,12 @@ public class AuthUserController {
         ApiResponseDto result = authUserService.signup(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<ApiResponseDto> signin(@RequestBody SignInRequestDto requestDto, HttpServletResponse response) {
+        ApiResponseDto result = authUserService.signin(requestDto, response);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

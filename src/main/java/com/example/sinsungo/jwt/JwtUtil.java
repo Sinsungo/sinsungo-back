@@ -39,6 +39,8 @@ public class JwtUtil {
     // enum, 사용할 암호화 알고리즘
     public final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
+    public static final String AUTHORIZATION_KEY = "auth";
+
     // 생성자가 호출된 이후 (객체가 만들어진 이후) 코드 실행
     @PostConstruct
     public void init(){
@@ -49,12 +51,13 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String username){
+    public String createToken(String username,  UserRoleEnum role){
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username) // 사용자 id
+                        .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급 시간
                         .signWith(key,signatureAlgorithm) // 키, 암호화 알고리즘
