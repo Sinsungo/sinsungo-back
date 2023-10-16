@@ -1,15 +1,19 @@
-package com.example.sinsungo.user.dto;
+package com.example.sinsungo.user.auth.dto;
 
 import com.example.sinsungo.user.UserRoleEnum;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class UserRequestDto {
+@Setter
+public class AuthUserRequestDto {
     private String username;
 
     private String password;
 
-    private String oauthProvider;
+    private String adminToken;
 
     private UserRoleEnum user_role;
+
+    private boolean admin = false;
 }
