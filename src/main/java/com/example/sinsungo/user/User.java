@@ -1,6 +1,6 @@
 package com.example.sinsungo.user;
 
-import com.example.sinsungo.entity.TimeStamped;
+import com.example.sinsungo.common.entity.TimeStamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

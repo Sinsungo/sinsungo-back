@@ -1,6 +1,6 @@
 package com.example.sinsungo.refrigerator;
 
-import com.example.sinsungo.entity.TimeStamped;
+import com.example.sinsungo.common.entity.TimeStamped;
 import com.example.sinsungo.refrigerator.dto.RefrigeratorRequestDto;
 import com.example.sinsungo.user.User;
 import jakarta.persistence.*;
@@ -30,5 +30,13 @@ public class Refrigerator extends TimeStamped {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
         this.user = user;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.sinsungo.notice;
 
-import com.example.sinsungo.entity.TimeStamped;
+import com.example.sinsungo.common.entity.TimeStamped;
 import com.example.sinsungo.notice.dto.NoticeRequestDto;
 import com.example.sinsungo.user.User;
 import jakarta.persistence.*;
