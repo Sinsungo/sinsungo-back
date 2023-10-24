@@ -1,4 +1,4 @@
-package com.example.sinsungo.entity;
+package com.example.sinsungo.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
