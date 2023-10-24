@@ -25,9 +25,9 @@ public class AuthUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<ApiResponseDto> signin(@RequestBody SignInRequestDto requestDto, HttpServletResponse response) {
-        ApiResponseDto result = authUserService.signin(requestDto, response);
+    @PostMapping("/sign-in")
+    public ResponseEntity<ApiResponseDto> signIn(@RequestBody SignInRequestDto requestDto, HttpServletResponse response) {
+        ApiResponseDto result = authUserService.signIn(requestDto, response);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
