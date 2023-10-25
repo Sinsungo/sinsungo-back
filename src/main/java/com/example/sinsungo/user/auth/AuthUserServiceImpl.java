@@ -52,7 +52,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     @Override
-    public ApiResponseDto signin(SignInRequestDto requestDto, HttpServletResponse response) {
+    public ApiResponseDto signIn(SignInRequestDto requestDto, HttpServletResponse response) {
         String username = requestDto.getUsername();
         User user = findUserByUserName(username);
 
