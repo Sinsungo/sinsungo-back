@@ -31,7 +31,6 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
         Refrigerator refrigerator = findRefrigerator(refrigeratorId);
 
         refrigerator.setTitle(requestDto.getTitle());
-        refrigerator.setDescription(requestDto.getDescription());
 
         return new ApiResponseDto("냉장고 수정 완료", 200);
 

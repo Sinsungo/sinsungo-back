@@ -20,23 +20,16 @@ public class Refrigerator extends TimeStamped {
 
     private String title;
 
-    private String description;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     public Refrigerator(RefrigeratorRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
-        this.description = requestDto.getDescription();
         this.user = user;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }
