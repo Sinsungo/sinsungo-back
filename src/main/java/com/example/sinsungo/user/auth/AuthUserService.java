@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface AuthUserService {
     ApiResponseDto signup(SignUpRequestDto requestDto);
 
-    ApiResponseDto signin(SignInRequestDto requestDto, HttpServletResponse response);
+    ApiResponseDto signIn(SignInRequestDto requestDto, HttpServletResponse response);
 
     boolean checkAdmin(String adminToken);
 
