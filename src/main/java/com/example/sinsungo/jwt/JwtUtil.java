@@ -4,12 +4,16 @@ import com.example.sinsungo.user.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -98,5 +102,18 @@ public class JwtUtil {
             return bearerToken.substring(7); // JWT 토큰 substring
         }
         return null;
+    }
+
+    public void addJwtToCookie(String token, HttpServletResponse response) {
+        try {
+            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20");
+
+            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token);
+            cookie.setPath("/");
+
+            response.addCookie(cookie);
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage());
+        }
     }
 }
