@@ -2,6 +2,7 @@ package com.example.sinsungo.user.auth;
 
 import com.example.sinsungo.common.ApiResponseDto;
 import com.example.sinsungo.jwt.JwtUtil;
+import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
 import com.example.sinsungo.user.User;
 import com.example.sinsungo.user.UserRepository;
 import com.example.sinsungo.user.UserRoleEnum;
@@ -44,7 +45,7 @@ public class AuthUserServiceImpl implements AuthUserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(requestDto.getUsername(), passwordEncoder.encode(requestDto.getPassword()), null, role);
+        User user = new User(requestDto.getUsername(), passwordEncoder.encode(requestDto.getPassword()), OAuthRoleEnum.ORIGIN, role);
 
         userRepository.save(user);
 
