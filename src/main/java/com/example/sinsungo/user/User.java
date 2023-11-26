@@ -1,6 +1,7 @@
 package com.example.sinsungo.user;
 
 import com.example.sinsungo.common.entity.TimeStamped;
+import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +20,17 @@ public class User extends TimeStamped {
     @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(name = "oauth_provider")
-    private String oauthProvider;
+    private OAuthRoleEnum oauthProvider;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    public User(String username, String password, String oauthProvider, UserRoleEnum role) {
+    public User(String username, String password, OAuthRoleEnum oauthProvider, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.oauthProvider = oauthProvider;
