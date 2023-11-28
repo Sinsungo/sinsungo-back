@@ -1,10 +1,12 @@
 package com.example.sinsungo.user.OAuth.google;
 
+import com.example.sinsungo.common.RedisUtil;
 import com.example.sinsungo.jwt.JwtUtil;
 import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
 import com.example.sinsungo.user.User;
 import com.example.sinsungo.user.UserRepository;
 import com.example.sinsungo.user.UserRoleEnum;
+import com.example.sinsungo.user.auth.dto.TokenResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +31,7 @@ import java.util.UUID;
 public class OAuthGoogleServiceImpl implements OAuthGoogleService{
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -40,7 +43,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
     private String redirectUri;
 
 
-    public void googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public TokenResponseDto googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
         log.info("googleLogin accessToken: " + accessToken);
@@ -51,8 +54,15 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
         // 회원가입 또는 로그인
         User googleUser = saveOrUpdate(googleUserInfo);
 
+        accessToken = jwtUtil.createToken(googleUser.getUsername(), googleUser.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(googleUser.getUsername(), googleUser.getRole());
+
+        redisUtil.saveRefreshToken(googleUser.getUsername(), refreshToken);
+
         // Access Token 생성 및 헤더에 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(googleUser.getUsername(), googleUser.getRole()));
+
+        return new TokenResponseDto(accessToken,refreshToken);
     }
 
 

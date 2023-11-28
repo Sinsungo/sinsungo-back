@@ -1,15 +1,18 @@
 package com.example.sinsungo.user.OAuth.kakao;
 
 import com.example.sinsungo.common.ApiResponseDto;
+import com.example.sinsungo.common.RedisUtil;
 import com.example.sinsungo.jwt.JwtUtil;
 import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
 import com.example.sinsungo.user.User;
 import com.example.sinsungo.user.UserRepository;
 import com.example.sinsungo.user.UserRoleEnum;
+import com.example.sinsungo.user.auth.dto.TokenResponseDto;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -21,8 +24,10 @@ import java.net.URL;
 public class OAuthKakaoServiceImpl implements OAuthKakaoService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
+
     @Override
-    public ApiResponseDto getKakaoAccessToken(String code, HttpServletResponse response) {
+    public TokenResponseDto getKakaoAccessToken(String code, HttpServletResponse response) {
         String access_Token = "";
         String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
@@ -40,7 +45,7 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=e6eb74c4e39a5a625d3ae1b207618b50"); // 신선고 REST_API_KEY 입력
+            sb.append("&client_id=eb00b28c3edd001446b16f5a6854bbb1"); // 신선고 REST_API_KEY 입력
             sb.append("&redirect_uri=http://localhost:8080/api/auth/kakao"); // 신선고 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
@@ -76,11 +81,16 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
 
             // Access Token 생성 및 헤더에 추가
             accessToken = jwtUtil.createToken(user.getUsername(), user.getRole());
+            refresh_Token = jwtUtil.createRefreshToken(user.getUsername(), user.getRole());
+            redisUtil.saveRefreshToken(user.getUsername(), refresh_Token);
+
             response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+            response.addHeader(JwtUtil.AUTHORIZATION_REFRESH_HEADER, refresh_Token);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ApiResponseDto(accessToken, 200);
+        return new TokenResponseDto(accessToken, refresh_Token);
     }
 
     @Override

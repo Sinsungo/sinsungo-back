@@ -1,6 +1,7 @@
 package com.example.sinsungo.user.auth;
 
 import com.example.sinsungo.common.ApiResponseDto;
+import com.example.sinsungo.common.RedisUtil;
 import com.example.sinsungo.jwt.JwtUtil;
 import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
 import com.example.sinsungo.user.User;
@@ -8,23 +9,30 @@ import com.example.sinsungo.user.UserRepository;
 import com.example.sinsungo.user.UserRoleEnum;
 import com.example.sinsungo.user.auth.dto.SignInRequestDto;
 import com.example.sinsungo.user.auth.dto.SignUpRequestDto;
+import com.example.sinsungo.user.auth.dto.TokenResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthUserServiceImpl implements AuthUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisUtil redisUtil;
     private final JwtUtil jwtUtil;
     @Value("${database.username}")
     private String ADMIN_TOKEN;
     @Override
+    @Transactional
     public ApiResponseDto signup(SignUpRequestDto requestDto) {
         Optional<User> checkUsername = userRepository.findByUsername(requestDto.getUsername());
         if (checkUsername.isPresent()) {
@@ -65,9 +73,29 @@ public class AuthUserServiceImpl implements AuthUserService {
 
         // Access Token 생성 및 헤더에 추가
         String accessToken = jwtUtil.createToken(user.getUsername(), user.getRole());
+        String rtk = jwtUtil.createRefreshToken(username, user.getRole());
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
 
         return new ApiResponseDto("로그인 성공", 200);
+    }
+    @Override
+    @Transactional
+    public ApiResponseDto logout(User user, HttpServletRequest request) {
+        String atk = jwtUtil.resolveToken(request);
+        String username = user.getUsername();
+
+        if(!redisUtil.hasKey(username)) { // key가 username인 refreshToken의 존재유무 검사
+            throw  new IllegalArgumentException("username을 key값으로 가지는 refreshToken이 존재하지 않습니다.");
+        }
+
+        // Redis에서 RefreshToken 삭제
+        redisUtil.delete(username);
+
+        // AccessToken 유효시간 가지고 오기 및 BlackList에 저장
+        Long expiration = jwtUtil.expireTime(atk);
+        redisUtil.setBlackList(atk, expiration);
+
+        return new ApiResponseDto("로그아웃 완료", 200);
     }
 
     @Override
@@ -75,6 +103,13 @@ public class AuthUserServiceImpl implements AuthUserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
     }
+
+    @Override
+    public TokenResponseDto reissue(User user, HttpServletRequest request) {
+        String newArk = jwtUtil.createToken(user.getUsername(), user.getRole());
+        return new TokenResponseDto(newArk, null);
+    }
+
     @Override
     public boolean checkAdmin(String adminToken) {
         if (adminToken.equals(ADMIN_TOKEN)) {

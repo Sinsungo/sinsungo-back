@@ -31,27 +31,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // request의 header에서 token value 값 꺼내기
         String tokenValue = jwtUtil.resolveToken(request);
 
-        log.info(tokenValue);
-
         if (StringUtils.hasText(tokenValue)) {
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Token Error");
                 return;
             }
+            if(request.getRequestURI().equals("/api/users/reissue")) {
+                String username = jwtUtil.getUsernameFromToken(tokenValue);
+                if(!jwtUtil.checkRefreshToken(username, tokenValue)) {
+                    // Handle the case when refresh token check fails
+                    log.error("Refresh token check failed");
+                    return;
+                }
+            }
 
             // body의 내용 꺼내기
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            setAuthentication(info.getSubject());
 
             try {
                 // token 생성 시 subject에 username 넣어둠
-                setAuthentication(info.getSubject());
+                filterChain.doFilter(request, response);
             } catch (Exception e) {
                 log.error(e.getMessage());
-                return;
             }
         }
-
-        filterChain.doFilter(request, response);
     }
 
     // token -> authentication 객체에 담기 -> security context에 담기 -> context holder에 담기 -> 인증 처리
