@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthUserController {
     private final AuthUserService authUserService;
 
+    //회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody SignUpRequestDto requestDto) {
         log.info("i n");
@@ -36,6 +37,7 @@ public class AuthUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    //로그인
     @PostMapping("/sign-in")
     public ResponseEntity<ApiResponseDto> signIn(@RequestBody SignInRequestDto requestDto, HttpServletResponse response) {
         ApiResponseDto result = authUserService.signIn(requestDto, response);
