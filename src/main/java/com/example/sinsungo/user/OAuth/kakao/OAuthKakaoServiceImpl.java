@@ -85,7 +85,6 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
             redisUtil.saveRefreshToken(user.getUsername(), refresh_Token);
 
             response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-            response.addHeader(JwtUtil.AUTHORIZATION_REFRESH_HEADER, refresh_Token);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -61,7 +61,7 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
 
     @Override
-    public ApiResponseDto signIn(SignInRequestDto requestDto, HttpServletResponse response) {
+    public TokenResponseDto signIn(SignInRequestDto requestDto, HttpServletResponse response) {
         String username = requestDto.getUsername();
         User user = findUserByUserName(username);
 
@@ -74,9 +74,11 @@ public class AuthUserServiceImpl implements AuthUserService {
         // Access Token 생성 및 헤더에 추가
         String accessToken = jwtUtil.createToken(user.getUsername(), user.getRole());
         String rtk = jwtUtil.createRefreshToken(username, user.getRole());
+        // RefreshToken Redis 저장
+        redisUtil.saveRefreshToken(user.getUsername(), rtk);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
 
-        return new ApiResponseDto("로그인 성공", 200);
+        return new TokenResponseDto(accessToken, rtk);
     }
     @Override
     @Transactional

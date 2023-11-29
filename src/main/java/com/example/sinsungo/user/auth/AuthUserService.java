@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface AuthUserService {
     ApiResponseDto signup(SignUpRequestDto requestDto);
 
-    ApiResponseDto signIn(SignInRequestDto requestDto, HttpServletResponse response);
+    TokenResponseDto signIn(SignInRequestDto requestDto, HttpServletResponse response);
 
     boolean checkAdmin(String adminToken);
 

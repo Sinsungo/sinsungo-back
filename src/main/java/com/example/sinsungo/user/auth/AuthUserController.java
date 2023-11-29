@@ -31,7 +31,7 @@ public class AuthUserController {
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody SignUpRequestDto requestDto) {
-        log.info("i n");
+        log.info("in");
         ApiResponseDto result = authUserService.signup(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -39,8 +39,8 @@ public class AuthUserController {
 
     //로그인
     @PostMapping("/sign-in")
-    public ResponseEntity<ApiResponseDto> signIn(@RequestBody SignInRequestDto requestDto, HttpServletResponse response) {
-        ApiResponseDto result = authUserService.signIn(requestDto, response);
+    public ResponseEntity<TokenResponseDto> signIn(@RequestBody SignInRequestDto requestDto, HttpServletResponse response) {
+        TokenResponseDto result = authUserService.signIn(requestDto, response);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
