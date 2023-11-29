@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RefrigeratorIngredientRepository  extends JpaRepository<RefrigeratorIngredient, Long> {
 
-  Slice<RefrigeratorIngredientResponseDto> findAllByUser(User user, Pageable pageable);
+  Slice<RefrigeratorIngredient> findAllByUser(User user, Pageable pageable);
 }

@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RefrigeratorRepository extends JpaRepository<Refrigerator, Long> {
 
-    Slice<RefrigeratorResponseDto> findAllByUser(User user, Pageable pageable);
+    Slice<Refrigerator> findAllByUser(User user, Pageable pageable);
 
 }

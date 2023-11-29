@@ -58,7 +58,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
   @Override
   public Slice<RefrigeratorIngredientResponseDto> getAllRefrigeratorIngredient(User user,
       Pageable pageable) {
-    return refrigeratorIngredientRepository.findAllByUser(user, pageable);
+    return refrigeratorIngredientRepository.findAllByUser(user, pageable).map(RefrigeratorIngredientResponseDto::new);
   }
 
   @Override
