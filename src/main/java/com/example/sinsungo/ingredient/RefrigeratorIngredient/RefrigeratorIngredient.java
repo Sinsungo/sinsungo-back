@@ -27,6 +27,10 @@ public class RefrigeratorIngredient extends Ingredient {
 
     private LocalDate deadline;
 
+    @ManyToOne
+    @JoinColumn(name = "refrigerator_id")
+    private Refrigerator refrigerator;
+
     public RefrigeratorIngredient(RefrigeratorIngredientRequestDto requestDto, User user, Refrigerator refrigerator) {
         this.category = requestDto.getCategory();
         this.deadline = requestDto.getDeadline();
@@ -34,7 +38,7 @@ public class RefrigeratorIngredient extends Ingredient {
         super.quantity = requestDto.getQuantity();
         super.unit = requestDto.getUnit();
         super.user = user;
-        super.refrigerator = refrigerator;
+        this.refrigerator = refrigerator;
     }
 
     public void setCategory(String category) {
@@ -58,6 +62,6 @@ public class RefrigeratorIngredient extends Ingredient {
     }
 
     public void setRefrigerator(Refrigerator refrigerator) {
-        super.refrigerator = refrigerator;
+        this.refrigerator = refrigerator;
     }
 }
