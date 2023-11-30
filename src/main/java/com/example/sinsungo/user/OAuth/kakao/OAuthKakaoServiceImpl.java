@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OAuthKakaoServiceImpl implements OAuthKakaoService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -50,8 +52,8 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
+            log.info("in");
 
-            //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
 
@@ -67,6 +69,7 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
 
             //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
             JsonElement element = JsonParser.parseString(result);
+            log.info("element :"+element);
 
             access_Token = element.getAsJsonObject().get("access_token").getAsString();
             refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
@@ -150,7 +153,7 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
         User user = userRepository.findByUsername(email).orElse(null);
 
         if (user == null) {
-            user = new User(email, null, OAuthRoleEnum.KAKAO, UserRoleEnum.MEMBER);
+            user = new User(email, null, email , OAuthRoleEnum.KAKAO, UserRoleEnum.MEMBER);
             userRepository.save(user);
         }
         return user;

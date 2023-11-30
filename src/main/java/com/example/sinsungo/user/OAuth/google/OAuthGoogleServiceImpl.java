@@ -33,6 +33,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
 
+
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
 
@@ -96,13 +97,14 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
                 .headers(headers)
                 .body(params);
 
+        log.info("요청 전");
         // HTTP 요청 보내기
         ResponseEntity<String> response = restTemplate.exchange(
                 requestEntity,
                 String.class // 반환값 타입은 String
         );
 
-        // HTTP 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
+        // HTTPㅔ갸 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
     }
@@ -130,7 +132,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
        User user = userRepository.findByUsername(googleInfo.getUsername()).orElse(null);
 
         if (user == null) {
-            user = new User(googleInfo.getUsername(), null, OAuthRoleEnum.GOOGLE, UserRoleEnum.MEMBER);
+            user = new User(googleInfo.getUsername(), null, googleInfo.getNickname() , OAuthRoleEnum.GOOGLE, UserRoleEnum.MEMBER);
             userRepository.save(user);
         }
 
