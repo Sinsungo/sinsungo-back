@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,11 @@ public class RefrigeratorIngredient extends Ingredient {
 
     private String category;
 
-    private LocalDateTime deadline;
+    private LocalDate deadline;
+
+    @ManyToOne
+    @JoinColumn(name = "refrigerator_id")
+    private Refrigerator refrigerator;
 
     public RefrigeratorIngredient(RefrigeratorIngredientRequestDto requestDto, User user, Refrigerator refrigerator) {
         this.category = requestDto.getCategory();
@@ -33,14 +38,14 @@ public class RefrigeratorIngredient extends Ingredient {
         super.quantity = requestDto.getQuantity();
         super.unit = requestDto.getUnit();
         super.user = user;
-        super.refrigerator = refrigerator;
+        this.refrigerator = refrigerator;
     }
 
     public void setCategory(String category) {
         this.category = category;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
@@ -57,6 +62,6 @@ public class RefrigeratorIngredient extends Ingredient {
     }
 
     public void setRefrigerator(Refrigerator refrigerator) {
-        super.refrigerator = refrigerator;
+        this.refrigerator = refrigerator;
     }
 }

@@ -3,7 +3,7 @@ package com.example.sinsungo.ingredient.RefrigeratorIngredient.dto;
 import com.example.sinsungo.ingredient.RefrigeratorIngredient.RefrigeratorIngredient;
 import com.example.sinsungo.ingredient.entity.IngredientUnitEnum;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.Getter;
 
 @Getter
@@ -13,8 +13,8 @@ public class RefrigeratorIngredientDetailResponseDto {
   private Long quantity;
   private IngredientUnitEnum unit;
   private Duration remainingTime;
-  private LocalDateTime deadline;
-  private LocalDateTime currentTime = LocalDateTime.now();
+  private LocalDate deadline;
+  private LocalDate currentTime = LocalDate.now();
 
   public RefrigeratorIngredientDetailResponseDto(RefrigeratorIngredient refrigeratorIngredient) {
     this.name = refrigeratorIngredient.getName();

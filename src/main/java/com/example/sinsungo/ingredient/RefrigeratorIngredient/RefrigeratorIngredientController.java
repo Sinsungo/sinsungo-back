@@ -62,7 +62,7 @@ public class RefrigeratorIngredientController {
 
   // service코드 다시 짜야함
   @Operation(summary = "냉장고 재료 전체 조회")
-  @GetMapping
+  @GetMapping("/all")
   public ResponseEntity<Slice<RefrigeratorIngredientResponseDto>> getAllRefrigeratorIngredient(@AuthenticationPrincipal UserDetailsImpl userDetails, Pageable pageable) {
     Slice<RefrigeratorIngredientResponseDto> result = ingredientService.getAllRefrigeratorIngredient(userDetails.getUser(), pageable);
     return ResponseEntity.status(HttpStatus.OK).body(result);
