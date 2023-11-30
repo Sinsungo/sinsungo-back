@@ -53,7 +53,7 @@ public class AuthUserServiceImpl implements AuthUserService {
             role = UserRoleEnum.ADMIN;
         }
 
-        User user = new User(requestDto.getUsername(), passwordEncoder.encode(requestDto.getPassword()), OAuthRoleEnum.ORIGIN, role);
+        User user = new User(requestDto.getUsername(), passwordEncoder.encode(requestDto.getPassword()), requestDto.getNickname() ,OAuthRoleEnum.ORIGIN, role);
 
         userRepository.save(user);
 
