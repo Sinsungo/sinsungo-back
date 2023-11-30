@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/ref")
+@RequestMapping("/api/fridge")
 @Tag(name = "냉장고 API")
 public class RefrigeratorController {
 

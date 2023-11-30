@@ -6,5 +6,4 @@ import lombok.Getter;
 public class RefrigeratorRequestDto {
     private String title;
 
-    private String description;
 }

@@ -1,8 +1,10 @@
 package com.example.sinsungo.ingredient.entity;
 
 import com.example.sinsungo.common.entity.TimeStamped;
+import com.example.sinsungo.refrigerator.Refrigerator;
 import jakarta.persistence.*;
 import lombok.Getter;
+import com.example.sinsungo.user.User;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
@@ -18,5 +20,15 @@ public class Ingredient extends TimeStamped {
 
     protected Long quantity;
 
-    protected String unit;
+    @Enumerated(value = EnumType.STRING)
+    protected IngredientUnitEnum unit;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    protected User user;
+
+    @ManyToOne
+    @JoinColumn(name = "refrigerator_id")
+    protected Refrigerator refrigerator;
+
 }
