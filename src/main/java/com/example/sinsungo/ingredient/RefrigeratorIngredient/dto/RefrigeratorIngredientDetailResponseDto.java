@@ -4,7 +4,6 @@ import com.example.sinsungo.ingredient.RefrigeratorIngredient.RefrigeratorIngred
 import com.example.sinsungo.ingredient.entity.IngredientUnitEnum;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter

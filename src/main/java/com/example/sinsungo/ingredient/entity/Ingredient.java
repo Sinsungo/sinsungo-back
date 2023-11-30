@@ -26,10 +26,4 @@ public class Ingredient extends TimeStamped {
     @ManyToOne
     @JoinColumn(name = "user_id")
     protected User user;
-
-//    @ManyToOne
-//    @JoinColumn(name = "refrigerator_id")
-//    protected Refrigerator refrigerator;
-
-
 }
