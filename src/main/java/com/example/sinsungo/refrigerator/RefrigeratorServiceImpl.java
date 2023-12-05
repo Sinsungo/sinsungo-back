@@ -5,6 +5,7 @@ import com.example.sinsungo.refrigerator.dto.RefrigeratorDetailResponseDto;
 import com.example.sinsungo.refrigerator.dto.RefrigeratorRequestDto;
 import com.example.sinsungo.refrigerator.dto.RefrigeratorResponseDto;
 import com.example.sinsungo.user.User;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -31,7 +32,6 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
         Refrigerator refrigerator = findRefrigerator(refrigeratorId);
 
         refrigerator.setTitle(requestDto.getTitle());
-        refrigerator.setDescription(requestDto.getDescription());
 
         return new ApiResponseDto("냉장고 수정 완료", 200);
 
@@ -49,7 +49,8 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
 
     @Override
     public Slice<RefrigeratorResponseDto> getAllRefrigerator(User user,Pageable pageable) {
-        return refrigeratorRepository.findAllByUser(user,pageable);
+        return refrigeratorRepository.findAllByUser(user, pageable)
+            .map(RefrigeratorResponseDto::new);
     }
 
     @Override
