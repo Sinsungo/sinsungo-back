@@ -1,6 +1,5 @@
 package com.example.sinsungo.user.OAuth.kakao;
 
-import com.example.sinsungo.common.ApiResponseDto;
 import com.example.sinsungo.common.RedisUtil;
 import com.example.sinsungo.jwt.JwtUtil;
 import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
@@ -11,14 +10,17 @@ import com.example.sinsungo.user.auth.dto.TokenResponseDto;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +30,20 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
     private final JwtUtil jwtUtil;
     private final RedisUtil redisUtil;
 
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
+    private String grantType;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String redirectUri;
+
     @Override
     public TokenResponseDto getKakaoAccessToken(String code, HttpServletResponse response) {
         String access_Token = "";
         String refresh_Token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
-
         String accessToken = null;
         try {
             URL url = new URL(reqURL);
@@ -46,14 +56,14 @@ public class OAuthKakaoServiceImpl implements OAuthKakaoService {
             //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
-            sb.append("grant_type=authorization_code");
-            sb.append("&client_id=eb00b28c3edd001446b16f5a6854bbb1"); // 신선고 REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:8080/api/auth/kakao"); // 신선고 인가코드 받은 redirect_uri 입력
-            sb.append("&code=" + code);
+            sb.append("grant_type=").append(grantType);
+            sb.append("&client_id=").append(clientId); // 신선고 REST_API_KEY 입력
+            sb.append("&redirect_uri=").append(redirectUri); // 신선고 인가코드 받은 redirect_uri 입력
+            sb.append("&code=").append(code);
             bw.write(sb.toString());
             bw.flush();
-            log.info("in");
 
+            //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
             System.out.println("responseCode : " + responseCode);
 

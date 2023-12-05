@@ -1,6 +1,5 @@
 package com.example.sinsungo.user.OAuth;
 
-import com.example.sinsungo.common.ApiResponseDto;
 import com.example.sinsungo.user.OAuth.google.OAuthGoogleService;
 import com.example.sinsungo.user.OAuth.kakao.OAuthKakaoService;
 import com.example.sinsungo.user.auth.dto.TokenResponseDto;

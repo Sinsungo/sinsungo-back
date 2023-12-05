@@ -82,6 +82,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
 
         // HTTP Header 생성: application/x-www-form-urlencoded 형식의 본문을 가진 POST 요청을 생성
         HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("Content-type", "application/x-www-form-urlencoded");
 
         // HTTP Body 생성
@@ -97,16 +98,16 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
                 .headers(headers)
                 .body(params);
 
-        log.info("요청 전");
         // HTTP 요청 보내기
         ResponseEntity<String> response = restTemplate.exchange(
                 requestEntity,
                 String.class // 반환값 타입은 String
         );
 
-        // HTTPㅔ갸 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
+        // HTTP갸 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
+
     }
 
     private GoogleInfoResponse getUserInfo(String accessToken) throws JsonProcessingException {
