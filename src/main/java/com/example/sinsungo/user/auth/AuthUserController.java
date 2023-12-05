@@ -53,7 +53,7 @@ public class AuthUserController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     @Operation(summary = "엑세스 토큰 재발급")
-    @GetMapping("/reissue")
+    @PostMapping("/reissue")
     public TokenResponseDto reissue(
         @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
         TokenResponseDto result = authUserService.reissue(userDetails.getUser(), request);
