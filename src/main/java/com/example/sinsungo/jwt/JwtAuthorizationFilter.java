@@ -1,5 +1,6 @@
 package com.example.sinsungo.jwt;
 
+import com.example.sinsungo.common.RedisUtil;
 import com.example.sinsungo.user.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -27,31 +29,31 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsService; // 사용자가 존재하는지
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        // request의 header에서 token value 값 꺼내기
-        String tokenValue = jwtUtil.resolveToken(request);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String token = jwtUtil.resolveToken(request);
 
-        log.info(tokenValue);
-
-        if (StringUtils.hasText(tokenValue)) {
-            if (!jwtUtil.validateToken(tokenValue)) {
+        if(token != null) {
+            if(!jwtUtil.validateToken(token)){
                 log.error("Token Error");
                 return;
             }
-
-            // body의 내용 꺼내기
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
-            try {
-                // token 생성 시 subject에 username 넣어둠
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
+            if(request.getRequestURI().equals("/api/auth/reissue")) {
+                String username = jwtUtil.getUsernameFromToken(token);
+                if(!jwtUtil.checkRefreshToken(username, token)) {
+                    // Handle the case when refresh token check fails
+                    log.error("Refresh token check failed");
+                    return;
+                }
             }
+            Claims info = jwtUtil.getUserInfoFromToken(token);
+            setAuthentication(info.getSubject());
         }
-
-        filterChain.doFilter(request, response);
+        try {
+            log.info("AuthFilter -> filterChain");
+            filterChain.doFilter(request, response);
+        } catch (FileUploadException e) {
+            log.error(e.getMessage());
+        }
     }
 
     // token -> authentication 객체에 담기 -> security context에 담기 -> context holder에 담기 -> 인증 처리

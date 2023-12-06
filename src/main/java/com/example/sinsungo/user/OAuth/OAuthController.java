@@ -1,8 +1,8 @@
 package com.example.sinsungo.user.OAuth;
 
-import com.example.sinsungo.common.ApiResponseDto;
 import com.example.sinsungo.user.OAuth.google.OAuthGoogleService;
 import com.example.sinsungo.user.OAuth.kakao.OAuthKakaoService;
+import com.example.sinsungo.user.auth.dto.TokenResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,17 +25,17 @@ public class OAuthController {
 
     @Operation(summary = "Kakao 로그인")
     @GetMapping("/kakao")
-    public ResponseEntity<ApiResponseDto> getKakaoAccessToken(@RequestParam String code, HttpServletResponse response) {
-        ApiResponseDto result = oAuthKakaoService.getKakaoAccessToken(code, response);
+    public ResponseEntity<TokenResponseDto> getKakaoAccessToken(@RequestParam String code, HttpServletResponse response) {
+        TokenResponseDto result = oAuthKakaoService.getKakaoAccessToken(code, response);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @Operation(summary = "Google 로그인")
     @GetMapping("/login/oauth2/code/google")
-    public String getGoogleAccessToken(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        oAuthgoogleService.googleLogin(code, response);
+    public ResponseEntity<TokenResponseDto> getGoogleAccessToken(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        TokenResponseDto result = oAuthgoogleService.googleLogin(code, response);
 
-        return "redirect:/";
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

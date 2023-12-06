@@ -9,6 +9,8 @@ public class UserRequestDto {
 
     private String password;
 
+    private String nickname;
+
     private String oauthProvider;
 
     private UserRoleEnum user_role;

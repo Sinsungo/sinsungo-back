@@ -1,10 +1,12 @@
 package com.example.sinsungo.user.OAuth.google;
 
+import com.example.sinsungo.common.RedisUtil;
 import com.example.sinsungo.jwt.JwtUtil;
 import com.example.sinsungo.user.OAuth.OAuthRoleEnum;
 import com.example.sinsungo.user.User;
 import com.example.sinsungo.user.UserRepository;
 import com.example.sinsungo.user.UserRoleEnum;
+import com.example.sinsungo.user.auth.dto.TokenResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +31,8 @@ import java.util.UUID;
 public class OAuthGoogleServiceImpl implements OAuthGoogleService{
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisUtil redisUtil;
+
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -40,7 +44,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
     private String redirectUri;
 
 
-    public void googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public TokenResponseDto googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
         log.info("googleLogin accessToken: " + accessToken);
@@ -51,8 +55,15 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
         // 회원가입 또는 로그인
         User googleUser = saveOrUpdate(googleUserInfo);
 
+        accessToken = jwtUtil.createToken(googleUser.getUsername(), googleUser.getRole());
+        String refreshToken = jwtUtil.createRefreshToken(googleUser.getUsername(), googleUser.getRole());
+
+        redisUtil.saveRefreshToken(googleUser.getUsername(), refreshToken);
+
         // Access Token 생성 및 헤더에 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(googleUser.getUsername(), googleUser.getRole()));
+
+        return new TokenResponseDto(accessToken,refreshToken);
     }
 
 
@@ -71,6 +82,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
 
         // HTTP Header 생성: application/x-www-form-urlencoded 형식의 본문을 가진 POST 요청을 생성
         HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("Content-type", "application/x-www-form-urlencoded");
 
         // HTTP Body 생성
@@ -92,9 +104,10 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
                 String.class // 반환값 타입은 String
         );
 
-        // HTTP 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
+        // HTTP갸 응답 (JSON) -> 액세스 토큰 값을 반환합니다.
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
         return jsonNode.get("access_token").asText();
+
     }
 
     private GoogleInfoResponse getUserInfo(String accessToken) throws JsonProcessingException {
@@ -120,7 +133,7 @@ public class OAuthGoogleServiceImpl implements OAuthGoogleService{
        User user = userRepository.findByUsername(googleInfo.getUsername()).orElse(null);
 
         if (user == null) {
-            user = new User(googleInfo.getUsername(), null, OAuthRoleEnum.GOOGLE, UserRoleEnum.MEMBER);
+            user = new User(googleInfo.getUsername(), null, googleInfo.getNickname() , OAuthRoleEnum.GOOGLE, UserRoleEnum.MEMBER);
             userRepository.save(user);
         }
 

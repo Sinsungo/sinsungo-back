@@ -13,6 +13,8 @@ public class SignUpRequestDto {
 
     private String adminToken;
 
+    private String nickname;
+
     private UserRoleEnum user_role;
 
     private boolean admin = false;
