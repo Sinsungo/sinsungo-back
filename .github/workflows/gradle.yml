@@ -74,20 +74,16 @@ jobs:
         touch ~/.ssh/known_hosts
         ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
-    - name: Copy Docker Compose to EC2
-      run: |
-        echo "${{ secrets.KEY }}" | tr -d '\r' > key.pem
-        chmod 600 key.pem
-        eval "$(ssh-agent -s)"
-        ssh-add key.pem
-        scp -i key.pem ./src/main/resources/docker-compose.yml ${{ secrets.EC2_USERNAME }}@${{ secrets.HOST }}:~/docker-compose.yml
-      shell: /usr/bin/bash -e {0}
-      env:
-        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
-        JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
-
-
-    - name: Execute Docker Compose on EC2
-      run: |
-        ssh -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.HOST }} "sudo docker pull ${{ secrets.DOCKER_REPO }}:latest"
-        ssh -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.HOST }} "sudo docker-compose -f ~/docker-compose.yml up -d"ld
+    - name: Deploy to server
+      uses: appleboy/ssh-action@master
+      id: deploy
+      with:
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        key: ${{ secrets.KEY }}
+        envs: GITHUB_SHA
+      script: |
+        sudo docker rm -f $(docker ps -qa)
+        sudo docker pull ${{ secrets.DOCKER_REPO }}/directors-dev
+        docker-compose up -d
+        docker image prune -f
