@@ -72,7 +72,7 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         touch ~/.ssh/known_hosts
-        ssh-keyscan -t rsa 43.202.191.53 >> ~/.ssh/known_hosts
+        ssh-keyscan -t rsa 43.202.191.53 >> ~/.ssh/known_hosts || { echo "Failed to add EC2 Host Key"; exit 1; }
         chmod 700 ~/.ssh
         chmod 600 ~/.ssh/known_hosts
       shell: /usr/bin/bash -e {0}
