@@ -74,7 +74,6 @@ jobs:
         touch ~/.ssh/known_hosts
         ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
-
     - name: Copy Docker Compose to EC2
       run: |
         echo "${{ secrets.KEY }}" > key.pem
