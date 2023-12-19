@@ -38,8 +38,11 @@ jobs:
         echo "${{ secrets.APPLICATION_INFO }}" > ./application.properties
       shell: bash
 
+      # gradle을 통해 소스를 빌드
     - name: Build with Gradle
-      run: ./gradlew bootJar
+      run: |
+        chmod +x ./gradlew 
+        ./gradlew bootJar
 
     - name: Web Docker Build and Push
       run: |
