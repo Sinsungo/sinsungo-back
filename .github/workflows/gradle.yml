@@ -72,14 +72,7 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         touch ~/.ssh/known_hosts
-        ssh-keyscan -t rsa 43.202.191.53 >> ~/.ssh/known_hosts || { echo "Failed to add EC2 Host Key"; exit 1; }
-        chmod 700 ~/.ssh
-        chmod 600 ~/.ssh/known_hosts
-      shell: /usr/bin/bash -e {0}
-      env:
-        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
-        JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
-
+        ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
 
     - name: Copy Docker Compose to EC2
