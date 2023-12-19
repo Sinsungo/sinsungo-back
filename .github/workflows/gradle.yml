@@ -38,11 +38,12 @@ jobs:
         echo "${{ secrets.APPLICATION_INFO }}" > ./application.properties
       shell: bash
 
+    - name: Make Gradlew Executable
+      run: chmod +x ./gradlew
+
       # gradle을 통해 소스를 빌드
     - name: Build with Gradle
-      run: |
-        chmod +x ./gradlew 
-        ./gradlew bootJar
+      run: ./gradlew bootJar
 
     - name: Web Docker Build and Push
       run: |
