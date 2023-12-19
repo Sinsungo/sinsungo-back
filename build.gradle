@@ -11,6 +11,11 @@ java {
     sourceCompatibility = '17'
 }
 
+// jar파일 이름을 app.jar
+bootJar {
+    archiveFileName = 'app.jar'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
