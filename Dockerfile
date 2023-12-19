@@ -1,11 +1,19 @@
-FROM openjdk:17-alpine
+FROM adoptopenjdk:17-jdk-hotspot AS builder
+
+WORKDIR /app
+COPY . .
+
+# Gradle 빌드
+RUN ./gradlew bootJar
+
+FROM adoptopenjdk:17-jre-hotspot
 
 WORKDIR /app
 
-COPY ./src/main/resources/application.properties ./application.properties
+# 빌드된 JAR 파일 복사
+COPY --from=builder /app/build/libs/*.jar app.jar
 
-COPY build/libs/*.jar app.jar
-
-ENV TZ=Asia/Seoul
+# application.properties 파일 복사
+COPY --from=builder /app/src/main/resources/application.properties /app/src/main/resources/application.properties
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
