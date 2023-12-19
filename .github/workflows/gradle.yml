@@ -77,7 +77,7 @@ jobs:
       - name: Copy Docker Compose to EC2
         run: |
           echo "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
+          chmod 400 key.pem
           scp -i key.pem -v ./src/main/resources/docker-compose.yml ${{ secrets.EC2_USERNAME }}@${{ secrets.HOST }}:~/docker-compose.yml
 
 
