@@ -74,20 +74,6 @@ jobs:
           touch ~/.ssh/known_hosts
           ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
-      - name: Set up SSH key
-        run: |
-          echo "${{ secrets.KEY }}" | base64 --decode > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Print Key Content
-        run: echo "${{ secrets.KEY }}"
-
-      - name: Check Key File
-        run: ls -l /github/home/.ssh
-
-      - name: Check Key Permission
-        run: stat -c %a /github/home/.ssh/id_rsa
-
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         id: deploy
