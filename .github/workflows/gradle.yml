@@ -72,7 +72,12 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         touch ~/.ssh/known_hosts
-        ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+        ssh-keyscan -t rsa ${{ secrets.HOST }} ~/.ssh/known_hosts
+      shell: /usr/bin/bash -e {0}
+      env:
+        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
+        JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
+
 
     - name: Copy Docker Compose to EC2
       run: |
