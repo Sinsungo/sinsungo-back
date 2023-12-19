@@ -76,9 +76,16 @@ jobs:
 
     - name: Copy Docker Compose to EC2
       run: |
-        echo "${{ secrets.KEY }}" > key.pem
+        echo "${{ secrets.EC2_PRIVATE_KEY }}" > key.pem
         chmod 600 key.pem
+        eval "$(ssh-agent -s)"
+        ssh-add key.pem
         scp -i key.pem ./src/main/resources/docker-compose.yml ${{ secrets.EC2_USERNAME }}@${{ secrets.HOST }}:~/docker-compose.yml
+      shell: /usr/bin/bash -e {0}
+      env:
+        JAVA_HOME: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
+        JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Adopt_jdk/17.0.9-9/x64
+
 
     - name: Execute Docker Compose on EC2
       run: |
