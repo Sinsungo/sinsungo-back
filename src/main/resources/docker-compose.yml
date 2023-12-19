@@ -39,7 +39,7 @@ services:
       - my_network
 
   web:
-    image: bsb99/living-by-myself-server:latest
+    image: wisdomsg/sinsungo-server:latest
     ports:
       - "8080:8080"
     depends_on:
@@ -47,11 +47,11 @@ services:
       - kafka
     networks:
       - my_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://tracelover.shop/home/communities"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl -f https://tracelover.shop/home/communities"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 3
 
 networks:
   my_network:
