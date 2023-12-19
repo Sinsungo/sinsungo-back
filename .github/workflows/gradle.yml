@@ -74,10 +74,16 @@ jobs:
         touch ~/.ssh/known_hosts
         ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
+    - name: Set up SSH key
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
     - name: Deploy to server
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
-        key: ${{ secrets.KEY }}
+        key: ~/.ssh/id_rsa
         envs: GITHUB_SHA
+
