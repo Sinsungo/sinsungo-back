@@ -76,6 +76,7 @@ jobs:
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
+        id: deploy
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
