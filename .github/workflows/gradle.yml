@@ -79,6 +79,13 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
+    - name: Print Key Content
+      run: echo "${{ secrets.SSH_PRIVATE_KEY }}"
+    - name: Check Key File
+      run: ls -l /github/home/.ssh
+    - name: Check Key Permission
+      run: stat -c %a /github/home/.ssh/id_rsa
+
     - name: Deploy to server
       uses: appleboy/ssh-action@master
       with:
