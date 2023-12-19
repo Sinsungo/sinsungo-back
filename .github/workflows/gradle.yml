@@ -42,7 +42,7 @@ jobs:
     - name: Build with Gradle
       run: |
         chmod +x ./gradlew 
-        ./gradlew bootJar
+        ./gradlew clean build -x test
 
     - name: Web Docker Build and Push
       run: |
