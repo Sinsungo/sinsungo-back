@@ -59,6 +59,7 @@ public class RefrigeratorServiceImpl implements RefrigeratorService{
         return new RefrigeratorDetailResponseDto(refrigerator);
     }
 
+
     @Override
     public Refrigerator findRefrigerator(Long refrigeratorId) {
         return refrigeratorRepository.findById(refrigeratorId).orElseThrow(()-> new IllegalArgumentException("냉장고가 존재하지 않습니다."));
