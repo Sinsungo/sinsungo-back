@@ -75,5 +75,6 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
-            sudo docker-compose -f src/main/resources/docker-compose.yml up -d
+            sudo docker stop prod-server
+            sudo docker rm prod-server
+            sudo docker-compose -f $GITHUB_WORKSPACE/src/main/resources/docker-compose.yml up -d
