@@ -77,4 +77,9 @@ jobs:
           script: |
             sudo docker stop prod-server
             sudo docker rm prod-server
+
+            # Docker Hub에서 이미지 pull
+            sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
+            
+            # Docker Compose 실행
             sudo docker-compose -f $GITHUB_WORKSPACE/src/main/resources/docker-compose.yml up -d
