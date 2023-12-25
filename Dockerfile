@@ -2,8 +2,9 @@ FROM openjdk:17-alpine
 
 WORKDIR /app
 
-COPY ./application.properties ./src/main/resources/application.properties
-COPY app.jar .
+COPY ./src/main/resources/application.properties ./application.properties
+
+COPY build/libs/*.jar app.jar
 
 ENV TZ=Asia/Seoul
 
