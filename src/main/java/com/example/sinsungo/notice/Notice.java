@@ -31,4 +31,8 @@ public class Notice extends TimeStamped {
         this.description = requestDto.getDescription();
         this.user = user;
     }
+    public void setNotice(NoticeRequestDto requestDto){
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+    }
 }
