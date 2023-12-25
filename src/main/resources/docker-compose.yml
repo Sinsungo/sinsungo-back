@@ -14,16 +14,13 @@ services:
       - my_network
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: wisdomsg/sinsungo:latest
     ports:
       - "8080:8080"
     depends_on:
       - redis
     networks:
       - my_network
-
 
 networks:
   my_network:
