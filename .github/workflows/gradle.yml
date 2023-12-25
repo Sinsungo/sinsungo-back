@@ -76,4 +76,4 @@ jobs:
           envs: GITHUB_SHA
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
-            sudo docker-compose -f ./docker-compose.yml up -d
+            sudo docker-compose -f ./src/main/resources/docker-compose.yml up -d
