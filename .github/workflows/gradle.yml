@@ -31,6 +31,9 @@ jobs:
           echo "${{ secrets.APPLICATION_INFO }}" > ./application.properties
         shell: bash
 
+      - name: Make Gradlew Executable
+        run: chmod +x ./gradlew
+
       - name: Build with Gradle
         run: ./gradlew bootJar
 
