@@ -65,6 +65,7 @@ jobs:
           mkdir -p ~/.ssh
           touch ~/.ssh/known_hosts
           ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         id: deploy
@@ -74,7 +75,5 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}:latest  # 수정
-            sudo docker-compose up -d  # 수정
-            sudo docker image prune -f
+            sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
+            sudo docker-compose -f ~/docker-compose.yml up -d
