@@ -14,7 +14,7 @@ services:
       - my_network
 
   web:
-    image: wisdomsg/sinsungo:latest
+    image: wisdomsg/sinsungo/web
     ports:
       - "8080:8080"
     depends_on:

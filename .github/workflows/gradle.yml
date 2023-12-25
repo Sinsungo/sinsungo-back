@@ -35,36 +35,15 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew bootJar
+        run: ./gradlew clean build -x test
 
-      - name: Web Docker Build and Push
+      # dockerfile을 통해 이미지를 빌드하고, 이를 docker repo로 push 합니다.
+      # 이 때 사용되는 ${{ secrets.DOCKER_REPO }}/directors-dev 가 위에서 만든 도커 repository 입니다.
+      - name: Docker build & push to docker repo
         run: |
-          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          
-          # Gradle 빌드에서 생성된 JAR 파일을 Docker 이미지로 복사
-          cp -n build/libs/*.jar app.jar
-          
-          # application.properties 파일도 Docker 이미지로 복사
-          if [ ! -f ./src/main/resources/application.properties ]; then
-            cp ./src/main/resources/application.properties ./src/main/resources/application.properties
-          fi
-          
-          # Remove the image if it exists
-          docker image rm -f ${{ secrets.DOCKER_REPO }} || true
-          
-          # Docker 이미지 빌드 및 태그
-          docker build -t ${{ secrets.DOCKER_REPO }} .
-          
-          # Docker 이미지에 latest 태그 추가
-          docker tag ${{ secrets.DOCKER_REPO }}:latest ${{ secrets.DOCKER_REPO }}:latest
-          
-          # Docker 이미지를 Docker Hub에 푸시
-          docker push ${{ secrets.DOCKER_REPO }}:latest
-      - name: Add EC2 Host Key
-        run: |
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          ssh-keyscan -t rsa ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }} .
+          docker push ${{ secrets.DOCKER_REPO }}
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -75,12 +54,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           envs: GITHUB_SHA
           script: |
-            sudo docker stop prod-server
-            sudo docker rm prod-server
-
-            # Docker Hub에서 이미지 pull
-            sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
-            
-            # Docker Compose 실행
-            cd ~/sinsungo-back/src/main/resources/
-            sudo docker-compose -f docker-compose.yml up -d
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_REPO }}
+            docker-compose up -d
+            docker image prune -f

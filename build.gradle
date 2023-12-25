@@ -80,8 +80,3 @@ sourceSets {
 clean {
     delete file(generated)
 }
-
-// jar파일 이름을 app.jar
-bootJar {
-    archiveFileName = 'app.jar'
-}
