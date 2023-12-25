@@ -82,5 +82,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
             
             # Docker Compose 실행
-            cd $GITHUB_WORKSPACE/src/main/resources/
+            cd ~/sinsungo-back/src/main/resources/
             sudo docker-compose -f docker-compose.yml up -d
