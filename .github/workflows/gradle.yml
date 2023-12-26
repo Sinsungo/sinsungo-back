@@ -42,8 +42,25 @@ jobs:
       - name: Docker build & push to docker repo
         run: |
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          docker build -t app .
-          docker tag app ${{ secrets.DOCKER_REPO }}:latest
+
+          # Gradle 빌드에서 생성된 JAR 파일을 Docker 이미지로 복사
+          cp -n build/libs/*.jar app.jar
+
+          # application.properties 파일도 Docker 이미지로 복사
+          if [ ! -f ./src/main/resources/application.properties ]; then
+            cp ./src/main/resources/application.properties ./src/main/resources/application.properties
+          fi
+
+          # Remove the image if it exists
+          docker image rm -f ${{ secrets.DOCKER_REPO }} || true
+
+          # Docker 이미지 빌드 및 태그
+          docker build -t ${{ secrets.DOCKER_REPO }} .
+
+          # Docker 이미지에 latest 태그 추가
+          docker tag ${{ secrets.DOCKER_REPO }}:latest ${{ secrets.DOCKER_REPO }}:latest
+
+          # Docker 이미지를 Docker Hub에 푸시
           docker push ${{ secrets.DOCKER_REPO }}:latest
 
       ## 서버에 접속하여 도커 이미지를 pull 받고 실행하기
