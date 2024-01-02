@@ -1,16 +1,14 @@
 version: '3'
 
 services:
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-
   sinsungo:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: wisdomsg/sinsungo:latest
     ports:
       - "8080:8080"
     depends_on:
       - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
