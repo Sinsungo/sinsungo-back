@@ -19,4 +19,8 @@ COPY --from=redis /data /var/lib/redis
 
 COPY ${JAR_FILE} /sinsungo.jar
 
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod", "/sinsungo.jar"]
+# Redis 서버 실행
+CMD ["redis-server"]
+
+# 어플리케이션 실행
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/sinsungo.jar"]
