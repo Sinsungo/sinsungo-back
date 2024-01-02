@@ -10,7 +10,6 @@
 #
 #ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-
 FROM openjdk:17-alpine
 
 ARG JAR_FILE=/build/libs/sinsungo-0.0.1-SNAPSHOT.jar
