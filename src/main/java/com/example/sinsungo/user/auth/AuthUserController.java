@@ -31,7 +31,6 @@ public class AuthUserController {
     //회원가입
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody SignUpRequestDto requestDto) {
-        log.info("in");
         ApiResponseDto result = authUserService.signup(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
