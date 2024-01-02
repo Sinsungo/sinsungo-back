@@ -19,8 +19,11 @@ COPY --from=redis /data /var/lib/redis
 
 COPY ${JAR_FILE} /sinsungo.jar
 
+# Redis 설정 파일 복사
+COPY redis.conf /etc/redis/redis.conf
+
 # Redis 서버 실행
-CMD ["redis-server"]
+CMD ["redis-server", "/etc/redis/redis.conf"]
 
 # 어플리케이션 실행
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "/sinsungo.jar"]
