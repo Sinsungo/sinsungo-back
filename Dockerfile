@@ -10,7 +10,6 @@
 #
 #ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-
 FROM redis:latest as redis
 
 FROM openjdk:17-alpine
