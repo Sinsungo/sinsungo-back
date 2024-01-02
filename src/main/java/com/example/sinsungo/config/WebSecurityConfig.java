@@ -46,7 +46,7 @@ public class WebSecurityConfig {
                         authorizeHttpRequests
                             .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                            .requestMatchers("/api/auth/**").permitAll()
+                            .requestMatchers("/api/auth/signup","/api/auth/sign-in").permitAll()
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // swagger 허용
                             .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
