@@ -1,5 +1,6 @@
 package com.example.sinsungo.config;
 
+import com.example.sinsungo.jwt.CustomAuthenticationEntryPoint;
 import com.example.sinsungo.jwt.JwtAuthorizationFilter;
 import com.example.sinsungo.jwt.JwtUtil;
 import com.example.sinsungo.user.UserDetailsServiceImpl;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +24,7 @@ import org.springframework.web.cors.CorsUtils;
 public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtil jwtUtil;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -52,8 +55,12 @@ public class WebSecurityConfig {
         );
 
         http.addFilterAfter(jwtAuthorizationFilter(),
-                UsernamePasswordAuthenticationFilter.class);
+                UsernamePasswordAuthenticationFilter.class)
+            .exceptionHandling(exceptionHandling ->
+                exceptionHandling.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+            );
 
         return http.build();
     }
+
 }
