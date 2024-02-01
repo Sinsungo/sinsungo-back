@@ -2,6 +2,7 @@ package com.example.sinsungo.ingredient.RefrigeratorIngredient.dto;
 
 import com.example.sinsungo.ingredient.RefrigeratorIngredient.RefrigeratorIngredient;
 import com.example.sinsungo.ingredient.entity.IngredientUnitEnum;
+import java.time.LocalDate;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class RefrigeratorIngredientDetailResponseDto {
   private IngredientUnitEnum unit;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
+  private LocalDate deadline;
 
   public RefrigeratorIngredientDetailResponseDto(RefrigeratorIngredient refrigeratorIngredient) {
     this.id = refrigeratorIngredient.getId();
@@ -24,6 +26,7 @@ public class RefrigeratorIngredientDetailResponseDto {
     this.unit = refrigeratorIngredient.getUnit();
     this.createdAt = refrigeratorIngredient.getCreatedAt();
     this.modifiedAt = refrigeratorIngredient.getModifiedAt();
+    this.deadline = refrigeratorIngredient.getDeadline();
 
   }
 }
