@@ -41,6 +41,7 @@ public class RefrigeratorIngredientServiceImpl implements RefrigeratorIngredient
      ingredient.setRefrigerator(ingredient.getRefrigerator());
      ingredient.setUnit(requestDto.getUnit());
      ingredient.setCategory(requestDto.getCategory());
+     ingredient.setDeadline(requestDto.getDeadline());
 
     return new ApiResponseDto("냉장고 재료 수정 완료", 200);
   }
