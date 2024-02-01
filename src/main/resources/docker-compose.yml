@@ -1,0 +1,12 @@
+version: '3'
+services:
+  redis:
+    image: redis:latest
+    networks:
+      - my_network
+  my_application:
+    image: wisdomsg/sinsungo:latest
+    networks:
+      - my_network
+networks:
+  my_network:
