@@ -2,26 +2,31 @@ package com.example.sinsungo.ingredient.RefrigeratorIngredient.dto;
 
 import com.example.sinsungo.ingredient.RefrigeratorIngredient.RefrigeratorIngredient;
 import com.example.sinsungo.ingredient.entity.IngredientUnitEnum;
-import java.time.Duration;
 import java.time.LocalDate;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class RefrigeratorIngredientDetailResponseDto {
+  private Long id;
   private String name;
   private String category;
   private Long quantity;
   private IngredientUnitEnum unit;
-  private Duration remainingTime;
+  private LocalDateTime createdAt;
+  private LocalDateTime modifiedAt;
   private LocalDate deadline;
-  private LocalDate currentTime = LocalDate.now();
 
   public RefrigeratorIngredientDetailResponseDto(RefrigeratorIngredient refrigeratorIngredient) {
+    this.id = refrigeratorIngredient.getId();
     this.name = refrigeratorIngredient.getName();
     this.category = refrigeratorIngredient.getCategory();
     this.quantity = refrigeratorIngredient.getQuantity();
     this.unit = refrigeratorIngredient.getUnit();
-    this.remainingTime = Duration.between(currentTime, refrigeratorIngredient.getDeadline());
+    this.createdAt = refrigeratorIngredient.getCreatedAt();
+    this.modifiedAt = refrigeratorIngredient.getModifiedAt();
     this.deadline = refrigeratorIngredient.getDeadline();
+
   }
 }
